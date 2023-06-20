@@ -1,0 +1,46 @@
+import board
+import time
+import digitalio
+import pwmio
+
+# define control board pins
+in1 = digitalio.DigitalInOut(board.GP4)
+in2 = digitalio.DigitalInOut(board.GP3)
+in1.direction = digitalio.Direction.OUTPUT
+in2.direction = digitalio.Direction.OUTPUT
+
+# define PWM pin (speed control)
+pwm = pwmio.PWMOut(board.GP0, frequency = 15)
+
+# set motor to 0
+pwm.duty_cycle = 0
+
+# set motor direction
+in1.value = True
+in2.value = False
+
+divide = 250		# do NOT exceed ~500
+i = int((2 ** 16) / divide)
+k = 0
+wait = 0.00001
+
+print('start', i)
+
+while True:
+    k += i
+    print(k)
+    if k >= ((2 ** 16) - 1):
+        print('end')
+        break     
+
+    pwm.duty_cycle = k
+  # pwm.duty_cycle = (2 ** 16) - 1           # -1 == maths fudge. it just works...
+    time.sleep(wait)
+  # pwm.duty_cycle = 0
+  # time.sleep(1)
+
+pwm.deinit()
+in1.deinit()
+in2.deinit()
+        
+
