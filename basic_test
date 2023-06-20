@@ -1,0 +1,36 @@
+# RPi Pico 
+import board
+import time
+import digitalio
+import pwmio
+
+# define control board pins
+in1 = digitalio.DigitalInOut(board.GP4)
+in2 = digitalio.DigitalInOut(board.GP3)
+in1.direction = digitalio.Direction.OUTPUT
+in2.direction = digitalio.Direction.OUTPUT
+
+# define PWM pin (speed control)
+pwm = pwmio.PWMOut(board.GP0, frequency = 15)
+
+# set motor to 0
+pwm.duty_cycle = 0
+
+# set motor direction
+in1.value = True
+in2.value = False
+
+i = 2
+
+k = 2 ** 16
+print(k)
+
+for _ in range(i):
+    pwm.duty_cycle = (2 ** 16) - 1           # -1 == maths fudge. it just works...
+    time.sleep(2)
+    pwm.duty_cycle = 0
+    time.sleep(1)
+
+pwm.deinit()
+        
+
